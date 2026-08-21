@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Plaid Test</title>
+
+    <script src="https://cdn.plaid.com/link/v2/stable/link-initialize.js"></script>
+</head>
+
+<body>
+
+<button id="connect">
+    CONNECT BANK
+</button>
+
+<script>
+
+    document.getElementById("connect").onclick = async () => {
+
+        // Ask Spring Boot for a Link token
+        const response = await fetch("/api/plaid/link-token", {
+            method: "POST"
+        });
+
+        const data = await response.json();
+
+        // Initialize Plaid
+        const handler = Plaid.create({
+            token: data.link_token,
+
+            onSuccess: async (publicToken, metadata) => {
+
+                console.log("PUBLIC TOKEN:", publicToken);
+
+                // Give public token to Spring Boot
+                await fetch("/api/plaid/exchange", {
+                    method: "POST",
+
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+
+                    body: JSON.stringify({
+                        publicToken: publicToken
+                    })
+                });
+
+            }
+        });
+
+        handler.open();
+    };
+
+</script>
+
+</body>
+</html>
