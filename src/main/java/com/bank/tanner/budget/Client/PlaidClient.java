@@ -37,9 +37,7 @@ public class PlaidClient {
                         .language("en")
                         .countryCodes(List.of(CountryCode.US))
                         .user(requestUser)
-                        .products(List.of(
-                                Products.AUTH,
-                                Products.TRANSACTIONS));
+                        .products(List.of(Products.TRANSACTIONS));
     }
 
     public String createLinkToken() throws IOException {
@@ -49,10 +47,37 @@ public class PlaidClient {
             if (response.isSuccessful() && response.body() != null) {
                 return response.body().getLinkToken();
             }
+
+            if (response.errorBody() != null) {
+                String errorBody = response.errorBody().string();
+                System.out.println("PLAID ERROR BODY:" + errorBody);
+            }
         }
         catch(IOException e){
             log.error("e: ", e);
         }
         return "Could not return link token";
+    }
+
+    public String exchangePublicToken(String publicToken) throws IOException {
+
+        ItemPublicTokenExchangeRequest request =
+                new ItemPublicTokenExchangeRequest()
+                        .publicToken(publicToken);
+
+        Response<ItemPublicTokenExchangeResponse> response =
+                plaidApi.itemPublicTokenExchange(request).execute();
+
+        if (response.isSuccessful() && response.body() != null) {
+            return response.body().getAccessToken();
+        }
+
+        if (response.errorBody() != null) {
+            String errorBody = response.errorBody().string();
+
+            log.error("Plaid token exchange failed: {}", errorBody);
+        }
+
+        throw new IOException("Could not exchange public token");
     }
 }

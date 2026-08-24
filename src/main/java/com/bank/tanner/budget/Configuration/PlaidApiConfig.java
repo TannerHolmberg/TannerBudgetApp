@@ -3,6 +3,7 @@ package com.bank.tanner.budget.Configuration;
 import com.bank.tanner.budget.Client.PlaidClient;
 import com.bank.tanner.budget.Controller.PlaidController;
 import com.bank.tanner.budget.Service.PlaidService;
+import com.bank.tanner.budget.Service.UserTokensService;
 import com.plaid.client.ApiClient;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -16,7 +17,7 @@ public class PlaidApiConfig {
     @Value("${PLAID_CLIENT_ID}")
     private String clientID;
 
-    @Value("${PLAID_SECRET}")
+    @Value("${plaid.production.secret}")
     private String secret;
 
     @Value("${user.id}")
@@ -28,8 +29,8 @@ public class PlaidApiConfig {
     }
 
     @Bean
-    public PlaidService plaidService(PlaidClient plaidClient){
-        return new PlaidService(plaidClient);
+    public PlaidService plaidService(PlaidClient plaidClient, UserTokensService userTokensService){
+        return new PlaidService(plaidClient, userTokensService);
     }
 
     @Bean
@@ -38,7 +39,7 @@ public class PlaidApiConfig {
     }
 
     @Bean
-    public ApiClient plaidApiClient (){
+    public ApiClient plaidApiClient () {
         Map<String, String> apiKeys = Map.of(
                 "clientId", clientID,
                 "secret", secret
@@ -46,7 +47,7 @@ public class PlaidApiConfig {
 
         ApiClient plaidApiClient = new ApiClient(apiKeys);
 
-        plaidApiClient.setPlaidAdapter(ApiClient.Sandbox);
+        plaidApiClient.setPlaidAdapter(ApiClient.Production);
 
         return plaidApiClient;
     }

@@ -2,10 +2,7 @@ package com.bank.tanner.budget.Controller;
 
 
 import com.bank.tanner.budget.Service.PlaidService;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
 import java.util.Map;
@@ -27,4 +24,10 @@ public class PlaidController {
 
         return Map.of("link_token", linkToken);
     }
+
+    @PostMapping("/exchange-token")
+    public boolean createAuthToken(@RequestParam String publicToken) throws IOException {
+        return plaidService.exchangePublicToken(publicToken);
+    }
+
 }

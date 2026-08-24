@@ -34,10 +34,31 @@ export default function PlaidLinkButton() {
 
     const { open, ready } = usePlaidLink({
         token: linkToken,
-        onSuccess: (publicToken, metadata) => {
+
+        onSuccess: async (publicToken, metadata) => {
             console.log("Public token:", publicToken);
             console.log("Metadata:", metadata);
-        },
+
+            if(publicToken == null){
+                return;
+            }
+
+            const response = await fetch(
+                `http://localhost:8080/api/plaid/exchange-token?publicToken=${encodeURIComponent(publicToken)}`,
+                {
+                    method: "POST"
+                }
+            );
+
+            const success = await response.json();
+
+            if (success) {
+                console.log("Token successfully exchanged and saved.");
+                // Load dashboard
+            } else {
+                console.error("Token exchange failed.");
+            }
+        }
     });
 
     return (
