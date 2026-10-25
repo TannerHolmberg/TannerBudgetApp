@@ -1,0 +1,31 @@
+.GaugeContainer{
+    width: 200px;
+    height: 200px;
+    border-Radius: 16px;
+    background-Color: #00224D;
+    border: solid 2px #5D0E41;
+    padding: 20px;
+    box-Sizing: border-box;
+    display: flex;
+    flex-Direction: column;
+    align-Items: center;
+    justify-Content: space-between;
+    box-Shadow: 0 2px 8px rgba(0,0,0,0.1);
+    cursor: pointer;
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.GaugeContainer:hover {
+    transform: scale(1.02);
+}
+
+.GaugeTitle{
+    margin: 0;
+    font-Size: 20px;
+    font-Weight: 600;
+    color: #D3DAD9;
+    width: 100%;
+    border-top-radius: 16px;
+    background-color: #5D0E41;
+
+}

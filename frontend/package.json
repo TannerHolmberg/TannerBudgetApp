@@ -10,9 +10,13 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@emotion/react": "^11.14.0",
+    "@emotion/styled": "^11.14.1",
+    "@mui/x-charts": "^9.12.0",
     "react": "^19.2.8",
     "react-dom": "^19.2.8",
-    "react-plaid-link": "^5.0.0"
+    "react-plaid-link": "^5.0.0",
+    "react-router-dom": "^7.18.3"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",

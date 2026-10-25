@@ -29,6 +29,19 @@ public class UserTokensService {
 
     }
 
+    public String getAccessToken(){
+        UserTokens accessToken = userTokensRepository
+                .findById(userId)
+                .orElse(null);
+
+        assert accessToken != null;
+        if(accessToken.getToken() == null){
+            return null;
+        }
+
+        return accessToken.getToken();
+    }
+
     public boolean saveTokenIfNeeded(String accessToken){
         UserTokens existingToken = userTokensRepository
                 .findById(userId)
@@ -36,7 +49,7 @@ public class UserTokensService {
 
         if (existingToken == null) {
             UserTokens newToken =
-                    new UserTokens(userId, LocalDateTime.now(), accessToken);
+                    new UserTokens(userId, LocalDateTime.now(), accessToken, "");
             userTokensRepository.save(newToken);
             return true;
         }
@@ -48,5 +61,29 @@ public class UserTokensService {
         existingToken.setToken(accessToken);
         userTokensRepository.save(existingToken);
         return true;
+    }
+
+    public String getCursor(){
+        UserTokens info = userTokensRepository
+                .findById(userId)
+                .orElseThrow(() -> new IllegalStateException(
+                        "User token does not exist"
+                ));
+
+        if (info.getCursor() == null || info.getCursor().isEmpty()) {
+            return null;
+        }
+
+        return info.getCursor();
+    }
+
+    public void setCursor(String cursor){
+        UserTokens info = userTokensRepository
+                .findById(userId)
+                .orElseThrow(() -> new IllegalStateException("User token does not exist"));
+
+        info.setCursor(cursor);
+
+        userTokensRepository.save(info);
     }
 }

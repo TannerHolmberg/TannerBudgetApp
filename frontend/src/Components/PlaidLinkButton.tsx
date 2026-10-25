@@ -5,7 +5,13 @@ interface LinkTokenResponse {
     link_token: string;
 }
 
-export default function PlaidLinkButton() {
+interface PlaidLinkButtonProps {
+    onConnectionSuccess: () => void;
+}
+
+export default function PlaidLinkButton({
+    onConnectionSuccess
+    }: PlaidLinkButtonProps) {
     const [linkToken, setLinkToken] = useState<string | null>(null);
 
     useEffect(() => {
@@ -25,6 +31,8 @@ export default function PlaidLinkButton() {
             );
 
             const data: LinkTokenResponse = await response.json();
+
+
 
             setLinkToken(data.link_token);
         };
@@ -55,6 +63,7 @@ export default function PlaidLinkButton() {
             if (success) {
                 console.log("Token successfully exchanged and saved.");
                 // Load dashboard
+                onConnectionSuccess();
             } else {
                 console.error("Token exchange failed.");
             }

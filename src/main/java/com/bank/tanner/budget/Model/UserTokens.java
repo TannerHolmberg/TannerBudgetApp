@@ -15,12 +15,15 @@ public class UserTokens {
 
     private String token;
 
+    private String cursor;
+
     UserTokens(){}
 
-    public UserTokens(Long id, LocalDateTime createdAt, String token){
+    public UserTokens(Long id, LocalDateTime createdAt, String token, String cursor){
         this.id = id;
         this.createdAt = createdAt;
         this.token = token;
+        this.cursor = cursor;
     }
 
     public Long getId() {
@@ -41,6 +44,14 @@ public class UserTokens {
 
     public String getToken(){
         return token;
+    }
+
+    public void setCursor(String cursor){
+        this.cursor = cursor;
+    }
+
+    public String getCursor(){
+        return cursor;
     }
 
 }

@@ -15,7 +15,7 @@ import java.util.List;
 public class PlaidClient {
 
     private static final Logger log = LogManager.getLogger(PlaidClient.class);
-    PlaidApi plaidApi;
+    static PlaidApi plaidApi;
 
     String userId;
 
@@ -47,7 +47,6 @@ public class PlaidClient {
             if (response.isSuccessful() && response.body() != null) {
                 return response.body().getLinkToken();
             }
-
             if (response.errorBody() != null) {
                 String errorBody = response.errorBody().string();
                 System.out.println("PLAID ERROR BODY:" + errorBody);
@@ -60,24 +59,36 @@ public class PlaidClient {
     }
 
     public String exchangePublicToken(String publicToken) throws IOException {
-
         ItemPublicTokenExchangeRequest request =
                 new ItemPublicTokenExchangeRequest()
                         .publicToken(publicToken);
-
         Response<ItemPublicTokenExchangeResponse> response =
                 plaidApi.itemPublicTokenExchange(request).execute();
-
         if (response.isSuccessful() && response.body() != null) {
             return response.body().getAccessToken();
         }
-
         if (response.errorBody() != null) {
             String errorBody = response.errorBody().string();
-
             log.error("Plaid token exchange failed: {}", errorBody);
         }
-
         throw new IOException("Could not exchange public token");
     }
+
+    public TransactionsSyncResponse getTransactions(String accessToken, String cursor) throws IOException {
+        TransactionsSyncRequest request =
+                new TransactionsSyncRequest()
+                        .accessToken(accessToken)
+                        .cursor(cursor)
+                        .count(500);
+
+        Response<TransactionsSyncResponse> response =
+                plaidApi.transactionsSync(request).execute();
+
+        if (!response.isSuccessful() || response.body() == null) {
+            throw new IOException("Failed to get transactions");
+        }
+
+        return response.body();
+    }
+
 }

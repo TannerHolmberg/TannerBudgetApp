@@ -2,6 +2,8 @@ package com.bank.tanner.budget.Configuration;
 
 import com.bank.tanner.budget.Client.PlaidClient;
 import com.bank.tanner.budget.Controller.PlaidController;
+import com.bank.tanner.budget.Repository.GaugeRepository;
+import com.bank.tanner.budget.Repository.TransactionsRepository;
 import com.bank.tanner.budget.Service.PlaidService;
 import com.bank.tanner.budget.Service.UserTokensService;
 import com.plaid.client.ApiClient;
@@ -29,8 +31,9 @@ public class PlaidApiConfig {
     }
 
     @Bean
-    public PlaidService plaidService(PlaidClient plaidClient, UserTokensService userTokensService){
-        return new PlaidService(plaidClient, userTokensService);
+    public PlaidService plaidService(PlaidClient plaidClient, UserTokensService userTokensService,
+                                     TransactionsRepository transactionsRepository, GaugeRepository gaugeRepository){
+        return new PlaidService(plaidClient, userTokensService, transactionsRepository, userId, gaugeRepository);
     }
 
     @Bean
