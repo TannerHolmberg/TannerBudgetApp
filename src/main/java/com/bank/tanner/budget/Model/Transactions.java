@@ -4,7 +4,6 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 
-import java.math.BigDecimal;
 import java.time.LocalDate;
 
 @Entity
@@ -30,6 +29,8 @@ public class Transactions {
 
     private boolean pending;
 
+    private boolean removed;
+
     public Transactions() {
     }
 
@@ -53,6 +54,7 @@ public class Transactions {
         this.date = date;
         this.category = category;
         this.pending = pending;
+        this.removed = false;
     }
 
     public String getTransactionId() {
@@ -98,4 +100,8 @@ public class Transactions {
     public void setPending(boolean pending) {
         this.pending = pending;
     }
+
+    public boolean isRemoved() { return removed; }
+
+    public void setRemoved(boolean removed) { this.removed = removed; }
 }

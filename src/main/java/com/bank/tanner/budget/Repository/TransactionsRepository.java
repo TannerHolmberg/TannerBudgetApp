@@ -11,4 +11,11 @@ public interface TransactionsRepository extends JpaRepository<Transactions, Stri
             LocalDate startDate,
             LocalDate endDate
     );
+
+    List<Transactions>  findByDateBetweenAndRemovedFalse(
+            LocalDate startDate,
+            LocalDate endDate
+    );
+
+    List<Transactions> findByPendingTrueAndDateBefore(LocalDate date);
 }

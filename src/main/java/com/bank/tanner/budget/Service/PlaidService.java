@@ -6,15 +6,13 @@ import com.bank.tanner.budget.Model.GaugeTransactionResponse;
 import com.bank.tanner.budget.Model.Transactions;
 import com.bank.tanner.budget.Repository.GaugeRepository;
 import com.bank.tanner.budget.Repository.TransactionsRepository;
+import com.plaid.client.model.RemovedTransaction;
 import com.plaid.client.model.Transaction;
 import com.plaid.client.model.TransactionsSyncResponse;
 
 import java.io.IOException;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class PlaidService {
 
@@ -71,6 +69,11 @@ public class PlaidService {
         List<Transaction> plaidTransactions =
                 syncResponse.getAdded();
 
+        List<RemovedTransaction> removedTransactions =
+                syncResponse.getRemoved();
+
+        markRemovedTransactions(removedTransactions);
+
         saveTransactions(plaidTransactions);
         moneyIn = 0.0;
         moneyOut = 0.0;
@@ -86,7 +89,7 @@ public class PlaidService {
         LocalDate startOfNextMonth = startOfMonth.plusMonths(1);
 
         List<Transactions> transactions =
-                transactionsRepository.findByDateBetween(
+                transactionsRepository.findByDateBetweenAndRemovedFalse(
                         startOfMonth,
                         startOfNextMonth.minusDays(1)
                 );
@@ -128,7 +131,6 @@ public class PlaidService {
         for (Transaction plaidTransaction : plaidTransactions) {
 
             String transactionId = plaidTransaction.getTransactionId();
-
             if (!transactionsRepository.existsById(transactionId)) {
 
                 assert plaidTransaction.getPersonalFinanceCategory() != null;
@@ -145,6 +147,18 @@ public class PlaidService {
                 );
 
                 transactionsRepository.save(transaction);
+            }
+        }
+    }
+
+    public void markRemovedTransactions(List<RemovedTransaction> removedTransactions) {
+        for (RemovedTransaction removedTransaction : removedTransactions){
+            if (transactionsRepository.existsById(removedTransaction.getTransactionId())){
+                Optional<Transactions> t = transactionsRepository.findById(removedTransaction.getTransactionId());
+                if(t.isPresent()){
+                    t.get().setRemoved(true);
+                    transactionsRepository.save(t.get());
+                }
             }
         }
     }

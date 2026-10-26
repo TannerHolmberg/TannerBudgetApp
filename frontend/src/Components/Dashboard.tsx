@@ -20,6 +20,7 @@ interface Transaction {
     category: string;
     date: string;
     pending: boolean;
+    removed: boolean;
 }
 
 interface GaugeTransactionResponse {
@@ -27,6 +28,7 @@ interface GaugeTransactionResponse {
     uncategorizedTransactions: Transaction[];
     gaugeFilteredTxn: Record<string, Transaction[]>;
     moneyIn: number | null;
+    moneyOut: number | null;
 }
 
 
@@ -38,6 +40,7 @@ export default function Dashboard() {
             uncategorizedTransactions: [],
             gaugeFilteredTxn: {},
             moneyIn: 0,
+            moneyOut: 0,
         });
 
     const [gauges, setGauges] = useState<Gauge[]>([]);
