@@ -6,8 +6,11 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 @SpringBootApplication
 public class TannersBudgetApp {
 
-	public static void main(String[] args) {
-		SpringApplication.run(TannersBudgetApp.class, args);
-	}
+    public TannersBudgetApp() {
+        super();
+    }
 
+    public static void main(String[] args) {
+        SpringApplication.run(TannersBudgetApp.class, args);
+    }
 }
